@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,17 +9,55 @@ import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/mobile_themes_page.dart';
 import 'services/audio_service.dart';
+import 'utils/app_logger.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // Global error handling zone
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  // تعيين اتجاه النص من اليمين لليسار
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+      // Setup Flutter framework error handling
+      FlutterError.onError = (FlutterErrorDetails details) {
+        AppLogger.error(
+          'Flutter framework error: ${details.exceptionAsString()}',
+          error: details.exception,
+          stackTrace: details.stack,
+        );
+        // In debug mode, also print to console for visibility
+        if (kDebugMode) {
+          FlutterError.dumpErrorToConsole(details);
+        }
+      };
 
-  runApp(const ChristmasThemeApp());
+      // Handle errors in async code that are not caught by Flutter
+      PlatformDispatcher.instance.onError = (error, stack) {
+        AppLogger.error(
+          'Platform dispatcher error',
+          error: error,
+          stackTrace: stack,
+        );
+        return true; // Prevents the error from propagating
+      };
+
+      // تعيين اتجاه النص من اليمين لليسار
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+
+      AppLogger.info('Application starting...');
+      runApp(const ChristmasThemeApp());
+    },
+    (error, stack) {
+      // Catch any errors that escape the zone
+      AppLogger.error(
+        'Uncaught zone error',
+        error: error,
+        stackTrace: stack,
+      );
+    },
+  );
 }
 
 class ChristmasThemeApp extends StatefulWidget {
@@ -42,8 +82,8 @@ class _ChristmasThemeAppState extends State<ChristmasThemeApp> {
       if (mounted) {
         setState(() => _currentTheme = theme);
       }
-    } catch (e) {
-      print('خطأ في تحميل الثيم: $e');
+    } catch (e, stack) {
+      AppLogger.error('Error loading theme', error: e, stackTrace: stack);
       // نستخدم الثيم الافتراضي في حالة الخطأ
     }
   }

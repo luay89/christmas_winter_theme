@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Christmas Winter Theme</string>
+    <string name="hello_world">Hello World!</string>
+    <color name="primary_color">#FF6200EE</color>
+    <color name="primary_dark_color">#FF3700B3</color>
+    <color name="accent_color">#FF03DAC5</color>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/accent_color</item>
+    </style>
+</resources>

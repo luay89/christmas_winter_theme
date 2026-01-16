@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../models/ringtone.dart';
 import '../services/audio_service.dart';
 import '../services/mobile_theme_service.dart';
 import '../services/download_service.dart';
 import '../services/ringtone_config_service.dart';
+import '../utils/app_logger.dart';
 
 class RingtoneCard extends StatefulWidget {
   final Ringtone ringtone;
@@ -17,16 +20,28 @@ class RingtoneCard extends StatefulWidget {
 
 class _RingtoneCardState extends State<RingtoneCard> {
   String? _overridePath;
+  
+  /// Stream subscription for player state changes - must be cancelled in dispose()
+  StreamSubscription<PlayerState>? _playerStateSubscription;
+
   @override
   void initState() {
     super.initState();
-    // الاستماع لتغييرات حالة التشغيل
-    AudioService.playerStateStream.listen((state) {
+    // الاستماع لتغييرات حالة التشغيل - with proper subscription management
+    _playerStateSubscription = AudioService.playerStateStream.listen((state) {
       if (mounted) {
         setState(() {});
       }
     });
     _loadOverride();
+  }
+
+  @override
+  void dispose() {
+    // CRITICAL: Cancel subscription to prevent memory leak
+    _playerStateSubscription?.cancel();
+    _playerStateSubscription = null;
+    super.dispose();
   }
 
   Future<void> _loadOverride() async {
