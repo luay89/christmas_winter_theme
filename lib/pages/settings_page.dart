@@ -73,8 +73,8 @@ class SettingsPage extends StatelessWidget {
                         gradient: isSelected
                             ? LinearGradient(
                                 colors: [
-                                  colorScheme.primary.withOpacity(0.1),
-                                  colorScheme.secondary.withOpacity(0.1),
+                                  colorScheme.primary.withValues(alpha: 0.1),
+                                  colorScheme.secondary.withValues(alpha: 0.1),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -116,7 +116,7 @@ class SettingsPage extends StatelessWidget {
                                   _getThemeDescription(themeStyle),
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.colorScheme.onSurface
-                                        .withOpacity(0.7),
+                                        .withValues(alpha: 0.7),
                                   ),
                                 ),
                               ],
@@ -191,14 +191,18 @@ class SettingsPage extends StatelessWidget {
                       Text(
                         'ثيم عيد الميلاد والشتاء\nتطبيق يوفر نغمات جميلة لعيد الميلاد والشتاء مع ثيمات متنوعة وجميلة',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.7,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'الإصدار: 1.0.0',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                     ],

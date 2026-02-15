@@ -7,6 +7,8 @@ import '../services/ringtone_config_service.dart';
 // audio_service not needed here
 import '../theme/app_themes.dart';
 import '../services/theme_service.dart';
+import '../utils/app_logger.dart';
+import '../utils/permission_helper.dart';
 
 class MobileThemesPage extends StatefulWidget {
   final void Function(ThemeStyle)? onThemeChanged;
@@ -37,6 +39,24 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
     try {
       // تطبيق نغمة الرنين الأولى من قائمة النغمات
       if (theme.ringtoneIds.isNotEmpty) {
+        // التحقق من إذن تعديل الإعدادات أولاً
+        if (!mounted) return;
+        final permitted = await PermissionHelper.ensureWriteSettingsPermission(
+          context,
+        );
+        if (!permitted) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('⚠️ يجب منح إذن تعديل الإعدادات أولاً'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+          setState(() => _isApplying = false);
+          return;
+        }
+
         final ringtones = Ringtone.getChristmasRingtones();
         final ringtone = ringtones.firstWhere(
           (r) => theme.ringtoneIds.contains(r.id),
@@ -72,7 +92,7 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
         // إبلاغ الوالد ليُطبق الثيم فوراً
         widget.onThemeChanged?.call(themeStyle);
       } catch (e) {
-        print('خطأ في تطبيق الثيم محلياً: $e');
+        AppLogger.error('خطأ في تطبيق الثيم محلياً', error: e);
       }
 
       if (mounted) {
@@ -142,7 +162,7 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              theme.colorScheme.primary.withOpacity(0.1),
+              theme.colorScheme.primary.withValues(alpha: 0.1),
               theme.colorScheme.surface,
             ],
           ),
@@ -152,7 +172,7 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
           children: [
             // عنوان توضيحي
             Card(
-              color: theme.colorScheme.primary.withOpacity(0.1),
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -197,7 +217,7 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: mobileTheme.primaryColor.withOpacity(0.3),
+                      color: mobileTheme.primaryColor.withValues(alpha: 0.3),
                       blurRadius: 15,
                       spreadRadius: 2,
                       offset: const Offset(0, 5),
@@ -247,7 +267,7 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
                                         center: Alignment.topRight,
                                         radius: 1.5,
                                         colors: [
-                                          Colors.white.withOpacity(0.3),
+                                          Colors.white.withValues(alpha: 0.3),
                                           Colors.transparent,
                                         ],
                                       ),
@@ -272,8 +292,8 @@ class _MobileThemesPageState extends State<MobileThemesPage> {
                                           color: Colors.white,
                                           shadows: [
                                             Shadow(
-                                              color: Colors.black.withOpacity(
-                                                0.5,
+                                              color: Colors.black.withValues(
+                                                alpha: 0.5,
                                               ),
                                               blurRadius: 10,
                                             ),

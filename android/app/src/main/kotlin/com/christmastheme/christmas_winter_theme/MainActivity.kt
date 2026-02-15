@@ -69,6 +69,14 @@ class MainActivity : FlutterActivity() {
             // إذا كان المسار هو من الأصول داخل الـ APK (assets)، انسخ الملف إلى MediaStore وحاول تعيينه
             val uri = copyAssetToRingtonesAndGetUri(audioPath, isRingtone = true)
             if (uri != null) {
+                // Check WRITE_SETTINGS permission on Android 6+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(this)) {
+                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    intent.data = Uri.parse("package:$packageName")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    return false
+                }
                 RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, uri)
                 return true
             }
@@ -98,6 +106,14 @@ class MainActivity : FlutterActivity() {
         return try {
             val uri = copyAssetToRingtonesAndGetUri(audioPath, isRingtone = false, isNotification = true)
             if (uri != null) {
+                // Check WRITE_SETTINGS permission on Android 6+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(this)) {
+                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    intent.data = Uri.parse("package:$packageName")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    return false
+                }
                 RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION, uri)
                 return true
             }

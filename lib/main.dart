@@ -8,7 +8,7 @@ import 'services/theme_service.dart';
 import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/mobile_themes_page.dart';
-import 'services/audio_service.dart';
+import 'services/service_providers.dart';
 import 'utils/app_logger.dart';
 
 void main() async {
@@ -47,15 +47,11 @@ void main() async {
       ]);
 
       AppLogger.info('Application starting...');
-      runApp(const ChristmasThemeApp());
+      runApp(const ServiceProviders(child: ChristmasThemeApp()));
     },
     (error, stack) {
       // Catch any errors that escape the zone
-      AppLogger.error(
-        'Uncaught zone error',
-        error: error,
-        stackTrace: stack,
-      );
+      AppLogger.error('Uncaught zone error', error: error, stackTrace: stack);
     },
   );
 }
@@ -90,7 +86,7 @@ class _ChristmasThemeAppState extends State<ChristmasThemeApp> {
 
   @override
   void dispose() {
-    AudioService.dispose();
+    // AudioService lifecycle managed by Provider
     super.dispose();
   }
 

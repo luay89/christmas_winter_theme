@@ -1,27 +1,59 @@
 import 'package:flutter/material.dart';
 
 enum ThemeStyle {
-  classicChristmas,    // أحمر وأخضر كلاسيكي
-  winterWonderland,    // أزرق فاتح وثلج
-  goldenElegance,      // ذهبي وأنيق
-  cozyWarmth,          // برتقالي دافئ
-  midnightSnow,        // أزرق داكن وثلج
+  classicChristmas, // أحمر وأخضر كلاسيكي
+  winterWonderland, // أزرق فاتح وثلج
+  goldenElegance, // ذهبي وأنيق
+  cozyWarmth, // برتقالي دافئ
+  midnightSnow, // أزرق داكن وثلج
 }
 
 class AppThemes {
   static ThemeData getTheme(ThemeStyle style) {
-    switch (style) {
-      case ThemeStyle.classicChristmas:
-        return _classicChristmasTheme;
-      case ThemeStyle.winterWonderland:
-        return _winterWonderlandTheme;
-      case ThemeStyle.goldenElegance:
-        return _goldenEleganceTheme;
-      case ThemeStyle.cozyWarmth:
-        return _cozyWarmthTheme;
-      case ThemeStyle.midnightSnow:
-        return _midnightSnowTheme;
-    }
+    return _buildTheme(getColorScheme(style));
+  }
+
+  /// Builds a ThemeData from a ColorScheme — single source of truth.
+  static ThemeData _buildTheme(ColorScheme colorScheme) {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
+      cardTheme: CardThemeData(
+        color: colorScheme.surface,
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withValues(alpha: 0.2),
+      ),
+      sliderTheme: SliderThemeData(
+        activeTrackColor: colorScheme.primary,
+        inactiveTrackColor: colorScheme.primary.withValues(alpha: 0.2),
+        thumbColor: colorScheme.primary,
+      ),
+    );
   }
 
   static String getThemeName(ThemeStyle style) {
@@ -102,165 +134,5 @@ class AppThemes {
           brightness: Brightness.dark,
         );
     }
-  }
-
-  static ThemeData get _classicChristmasTheme {
-    final colorScheme = getColorScheme(ThemeStyle.classicChristmas);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
-      cardTheme: CardThemeData(
-        color: colorScheme.surface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  static ThemeData get _winterWonderlandTheme {
-    final colorScheme = getColorScheme(ThemeStyle.winterWonderland);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
-      cardTheme: CardThemeData(
-        color: colorScheme.surface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  static ThemeData get _goldenEleganceTheme {
-    final colorScheme = getColorScheme(ThemeStyle.goldenElegance);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
-      cardTheme: CardThemeData(
-        color: colorScheme.surface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  static ThemeData get _cozyWarmthTheme {
-    final colorScheme = getColorScheme(ThemeStyle.cozyWarmth);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
-      cardTheme: CardThemeData(
-        color: colorScheme.surface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
-
-  static ThemeData get _midnightSnowTheme {
-    final colorScheme = getColorScheme(ThemeStyle.midnightSnow);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.surfaceContainerHighest,
-      cardTheme: CardThemeData(
-        color: colorScheme.surface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
   }
 }

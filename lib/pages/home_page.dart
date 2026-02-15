@@ -1,28 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import '../models/ringtone.dart';
+import '../utils/app_logger.dart';
+import '../widgets/animated_snow.dart';
 import '../widgets/ringtone_card.dart';
-
-// رسام الثلج
-class SnowPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
-    final random = math.Random(42);
-    for (int i = 0; i < 50; i++) {
-      final x = random.nextDouble() * size.width;
-      final y = random.nextDouble() * size.height;
-      final radius = random.nextDouble() * 3 + 1;
-      canvas.drawCircle(Offset(x, y), radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     try {
       _ringtones = Ringtone.getChristmasRingtones();
     } catch (e) {
-      print('خطأ في تحميل النغمات: $e');
+      AppLogger.error('خطأ في تحميل النغمات', error: e);
       _ringtones = [];
     }
   }
@@ -63,7 +43,9 @@ class _HomePageState extends State<HomePage> {
 
     // تصفية حسب الفئة
     if (_selectedCategory != 'الكل') {
-      filtered = filtered.where((r) => r.category == _selectedCategory).toList();
+      filtered = filtered
+          .where((r) => r.category == _selectedCategory)
+          .toList();
     }
 
     // تصفية حسب البحث
@@ -107,14 +89,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Stack(
                   children: [
-                    // تأثير الثلج (تأثير بصري بدون صورة)
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: 0.2,
-                        child: CustomPaint(
-                          painter: SnowPainter(),
-                        ),
-                      ),
+                    // تأثير الثلج المتحرك
+                    const Positioned.fill(
+                      child: AnimatedSnow(snowflakeCount: 50, opacity: 0.3),
                     ),
                   ],
                 ),
@@ -127,10 +104,10 @@ class _HomePageState extends State<HomePage> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: theme.colorScheme.primary.withOpacity(0.3),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -203,7 +180,9 @@ class _HomePageState extends State<HomePage> {
                         color: isSelected
                             ? theme.colorScheme.onPrimary
                             : theme.colorScheme.onSurface,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   );
@@ -214,16 +193,13 @@ class _HomePageState extends State<HomePage> {
           const SliverToBoxAdapter(child: SizedBox(height: 8)),
           // قائمة النغمات
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final ringtone = _filteredRingtones[index];
-                return RingtoneCard(
-                  ringtone: ringtone,
-                  onPlay: () => setState(() {}),
-                );
-              },
-              childCount: _filteredRingtones.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final ringtone = _filteredRingtones[index];
+              return RingtoneCard(
+                ringtone: ringtone,
+                onPlay: () => setState(() {}),
+              );
+            }, childCount: _filteredRingtones.length),
           ),
           if (_filteredRingtones.isEmpty)
             SliverFillRemaining(
@@ -236,20 +212,26 @@ class _HomePageState extends State<HomePage> {
                       Icon(
                         Icons.search_off,
                         size: 64,
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'لا توجد نتائج',
                         style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.7,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'حاول البحث بكلمات مختلفة',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                         textAlign: TextAlign.center,
                       ),

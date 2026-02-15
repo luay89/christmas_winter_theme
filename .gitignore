@@ -12,6 +12,9 @@
 .swiftpm/
 migrate_working_dir/
 
+# IDE and extension config (may contain API keys)
+.continue/
+
 # IntelliJ related
 *.iml
 *.ipr
